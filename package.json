@@ -1,0 +1,16 @@
+{
+  "name": "com.naderite.ui-window-manager",
+  "version": "1.0.1",
+  "displayName": "UI Window Manager",
+  "description": "test description",
+  "unity": "2019.1",
+  "unityRelease": "0b5",
+  "documentationUrl": "https://example.com/",
+
+  "keywords": ["UI", "Window", "Manager", "Navigation"],
+  "author": {
+    "name": "Naderite",
+    "email": "naderitegames@gmail.com",
+    "url": "https://github.com/naderitegames/ui-window-manager"
+  }
+}
