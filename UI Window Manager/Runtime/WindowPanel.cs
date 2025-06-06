@@ -25,11 +25,17 @@ namespace Naderite.UIWindowManager
         [SerializeField, Range(0f, 1f)] private float fromPositionLerpFactor = 1f;
         [SerializeField, Range(0f, 1f)] private float toPositionLerpFactor = 1f;
 
-        [Header("Scale Settings")] // اضافه کردن بخش جدید برای تنظیمات مقیاس
+        [Header("Scale Settings")]
         [SerializeField, Range(0f, 2f)] private float fromScale = 1f;
         [SerializeField, Range(0f, 2f)] private float stayScale = 1f;
         [SerializeField, Range(0f, 2f)] private float toScale = 1f;
 
+        [Header("Rotation Settings")] 
+        [SerializeField] private Vector3 fromRotation = Vector3.zero;
+        [SerializeField] private Vector3 stayRotation = Vector3.zero;
+        [SerializeField] private Vector3 toRotation = Vector3.zero;
+
+        [Header("Duration Settings")]
         [SerializeField] private float openingDuration = 0.5f;
         [SerializeField] private float closingDuration = 0.5f;
 
@@ -52,10 +58,13 @@ namespace Naderite.UIWindowManager
         public float FromPositionLerpFactor => fromPositionLerpFactor;
         public float ToPositionLerpFactor => toPositionLerpFactor;
 
-        // پیاده‌سازی متغیرهای مقیاس
         public float FromScale => fromScale;
         public float StayScale => stayScale;
         public float ToScale => toScale;
+
+        public Vector3 FromRotation => fromRotation; // پیاده‌سازی چرخش
+        public Vector3 StayRotation => stayRotation; // پیاده‌سازی چرخش
+        public Vector3 ToRotation => toRotation;     // پیاده‌سازی چرخش
 
         public WindowPosition FromPosition => fromPosition;
         public WindowPosition StayPosition => stayPosition;
@@ -153,6 +162,7 @@ namespace Naderite.UIWindowManager
             CanvasGroup.blocksRaycasts = status;
             RectTransform.anchoredPosition = GetWindowPosition(status ? stayPosition : toPosition);
             RectTransform.localScale = Vector3.one * (status ? stayScale : toScale);
+            RectTransform.localEulerAngles = status ? stayRotation : toRotation; // تنظیم زاویه نهایی
             IsOpen = status;
         }
 
@@ -185,6 +195,7 @@ namespace Naderite.UIWindowManager
                     RectTransform.anchoredPosition = GetWindowPosition(startPos,
                         status ? FromPositionLerpFactor : ToPositionLerpFactor);
                     RectTransform.localScale = Vector3.one * (status ? fromScale : stayScale);
+                    RectTransform.localEulerAngles = status ? fromRotation : stayRotation; // تنظیم زاویه اولیه
                     CanvasGroup.alpha = status ? 0f : 1f;
                     CanvasGroup.interactable = false;
                     CanvasGroup.blocksRaycasts = false;
@@ -193,6 +204,7 @@ namespace Naderite.UIWindowManager
                     GetWindowPosition(endPos, status ? FromPositionLerpFactor : ToPositionLerpFactor), duration))
                 .Join(CanvasGroup.DOFade(status ? 1 : 0, duration))
                 .Join(RectTransform.DOScale(status ? stayScale : toScale, duration))
+                .Join(RectTransform.DORotate(status ? stayRotation : toRotation, duration)) // انیمیشن چرخش با Vector3
                 .SetEase(status ? openingEase : closingEase)
                 .OnComplete(() =>
                 {

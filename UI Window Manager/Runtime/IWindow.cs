@@ -19,10 +19,13 @@ namespace Naderite.UIWindowManager
         float FromPositionLerpFactor { get; }
         float ToPositionLerpFactor { get; }
 
-        // اضافه کردن متغیرهای جدید برای کنترل مقیاس
-        float FromScale { get; } // مقیاس در موقعیت شروع
-        float StayScale { get; } // مقیاس در موقعیت ثابت
-        float ToScale { get; }   // مقیاس در موقعیت پایان
+        float FromScale { get; }
+        float StayScale { get; }
+        float ToScale { get; }
+
+        Vector3 FromRotation { get; } // زاویه چرخش در موقعیت شروع (X, Y, Z)
+        Vector3 StayRotation { get; } // زاویه چرخش در موقعیت ثابت (X, Y, Z)
+        Vector3 ToRotation { get; }   // زاویه چرخش در موقعیت پایان (X, Y, Z)
 
         Ease OpeningEase { get; }
         Ease ClosingEase { get; }

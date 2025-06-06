@@ -3347,6 +3347,10 @@ PrefabInstance:
       propertyPath: windowName
       value: Levels
       objectReference: {fileID: 0}
+    - target: {fileID: 871172260391324876, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
+      propertyPath: fromPositionLerpFactor
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5776819432216080759, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
       propertyPath: m_Name
       value: Levels WP
@@ -5415,6 +5419,14 @@ PrefabInstance:
     - target: {fileID: 871172260391324876, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
       propertyPath: windowName
       value: Main Menu
+      objectReference: {fileID: 0}
+    - target: {fileID: 871172260391324876, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
+      propertyPath: toPositionLerpFactor
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 871172260391324876, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
+      propertyPath: fromPositionLerpFactor
+      value: 0.5
       objectReference: {fileID: 0}
     - target: {fileID: 5776819432216080759, guid: 8a02f5511e2f84f4082b9fb0f314c2d2, type: 3}
       propertyPath: m_Name
