@@ -179,9 +179,12 @@ MonoBehaviour:
   closingEase: 1
   fromPosition: 4
   stayPosition: 2
-  toPosition: 4
+  toPosition: 0
   fromPositionLerpFactor: 1
   toPositionLerpFactor: 1
+  fromScale: 1
+  stayScale: 1
+  toScale: 1
   openingDuration: 0.5
   closingDuration: 0.5
   waitUntilClosingEnds: 1

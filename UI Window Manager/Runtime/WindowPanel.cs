@@ -13,38 +13,36 @@ namespace Naderite.UIWindowManager
         public string WindowName => windowName;
         [SerializeField] private string windowName;
 
-        [Header("Animation Settings")] [SerializeField]
-        private Ease openingEase = Ease.OutBack;
-
+        [Header("Animation Settings")]
+        [SerializeField] private Ease openingEase = Ease.OutBack;
         [SerializeField] private Ease closingEase = Ease.InBack;
 
         [SerializeField] private WindowPosition fromPosition = WindowPosition.Down;
         [SerializeField] private WindowPosition stayPosition = WindowPosition.Center;
         [SerializeField] private WindowPosition toPosition = WindowPosition.Down;
 
-        [Header("Animation Lerp Factors")] [SerializeField, Range(0f, 1f)]
-        private float fromPositionLerpFactor = 1f;
-
+        [Header("Animation Lerp Factors")]
+        [SerializeField, Range(0f, 1f)] private float fromPositionLerpFactor = 1f;
         [SerializeField, Range(0f, 1f)] private float toPositionLerpFactor = 1f;
+
+        [Header("Scale Settings")] // اضافه کردن بخش جدید برای تنظیمات مقیاس
+        [SerializeField, Range(0f, 2f)] private float fromScale = 1f;
+        [SerializeField, Range(0f, 2f)] private float stayScale = 1f;
+        [SerializeField, Range(0f, 2f)] private float toScale = 1f;
 
         [SerializeField] private float openingDuration = 0.5f;
         [SerializeField] private float closingDuration = 0.5f;
 
-        //[Tooltip("If true, the 'Close' operation will await the completion of this window's animation before returning. If false, the animation starts, but the operation returns immediately.")]
         public bool WaitUntilClosingEnds => waitUntilClosingEnds;
         [SerializeField] private bool waitUntilClosingEnds = true;
 
-        //[Tooltip("If true, the 'Open' operation will await the completion of this window's animation before returning. If false, the animation starts, but the operation returns immediately.")]
         public bool WaitUntilOpeningEnds => waitUntilOpeningEnds;
         [SerializeField] private bool waitUntilOpeningEnds = true;
 
-        [Header("Events")] [SerializeField] private UnityEvent onStart;
-
-        [FormerlySerializedAs("onOpen")] [SerializeField]
-        private UnityEvent onOpened;
-
-        [FormerlySerializedAs("onClose")] [SerializeField]
-        private UnityEvent onClosed;
+        [Header("Events")]
+        [SerializeField] private UnityEvent onStart;
+        [FormerlySerializedAs("onOpen")] [SerializeField] private UnityEvent onOpened;
+        [FormerlySerializedAs("onClose")] [SerializeField] private UnityEvent onClosed;
 
         public Sequence AnimateSequence { get; private set; }
         public CanvasGroup CanvasGroup { get; private set; }
@@ -53,6 +51,11 @@ namespace Naderite.UIWindowManager
         public Ease ClosingEase => closingEase;
         public float FromPositionLerpFactor => fromPositionLerpFactor;
         public float ToPositionLerpFactor => toPositionLerpFactor;
+
+        // پیاده‌سازی متغیرهای مقیاس
+        public float FromScale => fromScale;
+        public float StayScale => stayScale;
+        public float ToScale => toScale;
 
         public WindowPosition FromPosition => fromPosition;
         public WindowPosition StayPosition => stayPosition;
@@ -88,10 +91,21 @@ namespace Naderite.UIWindowManager
             if (animated)
             {
                 if (waitForEnd)
-                    await AsyncAnimate(isReversedAnimation ? toPosition : fromPosition, stayPosition, true,
-                        openingDuration, true);
+                    await AsyncAnimate(
+                        isReversedAnimation ? toPosition : fromPosition,
+                        stayPosition,
+                        true,
+                        openingDuration,
+                        true
+                    );
                 else
-                    Animate(isReversedAnimation ? toPosition : fromPosition, stayPosition, true, openingDuration, true);
+                    Animate(
+                        isReversedAnimation ? toPosition : fromPosition,
+                        stayPosition,
+                        true,
+                        openingDuration,
+                        true
+                    );
             }
             else
             {
@@ -101,17 +115,25 @@ namespace Naderite.UIWindowManager
 
         public virtual async Task Close(bool animated = true, bool isReversedAnimation = false)
         {
-            //if (!IsOpen) return;
-
             AnimateSequence?.Kill();
             if (animated)
             {
                 if (WaitUntilClosingEnds)
-                    await AsyncAnimate(stayPosition, isReversedAnimation ? fromPosition : toPosition, false,
-                        closingDuration, false);
+                    await AsyncAnimate(
+                        stayPosition,
+                        isReversedAnimation ? fromPosition : toPosition,
+                        false,
+                        closingDuration,
+                        false
+                    );
                 else
-                    Animate(stayPosition, isReversedAnimation ? fromPosition : toPosition, false, closingDuration,
-                        false);
+                    Animate(
+                        stayPosition,
+                        isReversedAnimation ? fromPosition : toPosition,
+                        false,
+                        closingDuration,
+                        false
+                    );
             }
             else
             {
@@ -130,12 +152,12 @@ namespace Naderite.UIWindowManager
             CanvasGroup.interactable = status;
             CanvasGroup.blocksRaycasts = status;
             RectTransform.anchoredPosition = GetWindowPosition(status ? stayPosition : toPosition);
+            RectTransform.localScale = Vector3.one * (status ? stayScale : toScale);
             IsOpen = status;
         }
 
         public virtual async Task AsyncAnimate(WindowPosition startPos, WindowPosition endPos, bool alpha,
-            float duration,
-            bool interactable)
+            float duration, bool interactable)
         {
             BaseAnimate(startPos, endPos, alpha, duration, interactable);
             if (AnimateSequence != null && AnimateSequence.IsActive())
@@ -162,6 +184,7 @@ namespace Naderite.UIWindowManager
                         OnStart?.Invoke();
                     RectTransform.anchoredPosition = GetWindowPosition(startPos,
                         status ? FromPositionLerpFactor : ToPositionLerpFactor);
+                    RectTransform.localScale = Vector3.one * (status ? fromScale : stayScale);
                     CanvasGroup.alpha = status ? 0f : 1f;
                     CanvasGroup.interactable = false;
                     CanvasGroup.blocksRaycasts = false;
@@ -169,6 +192,7 @@ namespace Naderite.UIWindowManager
                 .Append(RectTransform.DOAnchorPos(
                     GetWindowPosition(endPos, status ? FromPositionLerpFactor : ToPositionLerpFactor), duration))
                 .Join(CanvasGroup.DOFade(status ? 1 : 0, duration))
+                .Join(RectTransform.DOScale(status ? stayScale : toScale, duration))
                 .SetEase(status ? openingEase : closingEase)
                 .OnComplete(() =>
                 {
@@ -177,12 +201,10 @@ namespace Naderite.UIWindowManager
 
                     if (status)
                     {
-                        //IsOpen = true;
                         OnOpened?.Invoke();
                     }
                     else
                     {
-                        //IsOpen = false;
                         OnClosed?.Invoke();
                     }
                 });
