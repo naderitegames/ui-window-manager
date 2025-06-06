@@ -1,0 +1,16 @@
+{
+    "name": "com.naderitegames.uiwindowmanager.Runtime",
+    "rootNamespace": "",
+    "references": [
+        "GUID:a0cebc5e04c218546b73bc03a4f0f820"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
