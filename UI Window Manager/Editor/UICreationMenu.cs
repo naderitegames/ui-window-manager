@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace Naderite.UI_Window_Manager.Editor
+namespace Naderite.UIWindowManager.Editor
 {
     public static class UICreationMenu
     {

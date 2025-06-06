@@ -1,8 +1,7 @@
 using System.Collections.Generic;
-using Naderite.UI_Window_Manager;
 using UnityEngine;
 
-namespace Naderite.Simple_UIManager.Custom_Collections
+namespace Naderite.UIWindowManager.Custom_Collections
 {
     public class RegisteredWindowCollection
     {

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace Naderite.UI_Window_Manager
+namespace Naderite.UIWindowManager
 {
     public class UIManager : MonoBehaviour
     {

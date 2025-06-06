@@ -1,11 +1,10 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Naderite.Simple_UIManager.Custom_Collections;
-using Naderite.UI_Window_Manager;
-using Naderite.UI_Window_Manager.Window_Flow_Strategies;
+using Naderite.UIWindowManager.Custom_Collections;
+using Naderite.UIWindowManager.Window_Flow_Strategies;
 using UnityEngine;
 
-namespace Naderite.Simple_UIManager
+namespace Naderite.UIWindowManager
 {
     public class WindowFlowController : IWindowFlowStrategy
     {

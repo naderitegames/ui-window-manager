@@ -1,10 +1,10 @@
 using System.Threading.Tasks;
-using Naderite.UI_Window_Manager.Window_Flow_Strategies;
+using Naderite.UIWindowManager.Window_Flow_Strategies;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UI;
 
-namespace Naderite.UI_Window_Manager
+namespace Naderite.UIWindowManager
 {
     public enum WindowStrategyFlowType
     {

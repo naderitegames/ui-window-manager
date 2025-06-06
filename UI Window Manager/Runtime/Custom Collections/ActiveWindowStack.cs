@@ -1,8 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
-using Naderite.UI_Window_Manager;
-
-namespace Naderite.Simple_UIManager.Custom_Collections
+namespace Naderite.UIWindowManager.Custom_Collections
 {
     public class ActiveWindowStack
     {

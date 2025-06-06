@@ -3,7 +3,7 @@ using DG.Tweening;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace Naderite.UI_Window_Manager
+namespace Naderite.UIWindowManager
 {
     public interface IWindow
     {

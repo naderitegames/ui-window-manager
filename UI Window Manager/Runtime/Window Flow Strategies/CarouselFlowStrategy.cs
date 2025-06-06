@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
-namespace Naderite.UI_Window_Manager.Window_Flow_Strategies
+namespace Naderite.UIWindowManager.Window_Flow_Strategies
 {
     public class CarouselFlowStrategy : IWindowFlowStrategy
     {

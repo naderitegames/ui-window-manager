@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
-using Naderite.Simple_UIManager.Custom_Collections;
-using Naderite.UI_Window_Manager.Window_Flow_Strategies;
+using Naderite.UIWindowManager.Custom_Collections;
+using Naderite.UIWindowManager.Window_Flow_Strategies;
 using UnityEngine;
 
-namespace Naderite.UI_Window_Manager
+namespace Naderite.UIWindowManager
 {
     public sealed class WindowsContainer
     {

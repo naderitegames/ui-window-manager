@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-namespace Naderite.UI_Window_Manager.Window_Flow_Strategies
+namespace Naderite.UIWindowManager.Window_Flow_Strategies
 {
     public interface IWindowFlowStrategy
     {

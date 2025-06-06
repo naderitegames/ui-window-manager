@@ -1,9 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Naderite.Simple_UIManager.Custom_Collections;
+using Naderite.UIWindowManager.Custom_Collections;
 using UnityEngine;
 
-namespace Naderite.UI_Window_Manager.Window_Flow_Strategies
+namespace Naderite.UIWindowManager.Window_Flow_Strategies
 {
     public class StackFlowStrategy : IWindowFlowStrategy
     {

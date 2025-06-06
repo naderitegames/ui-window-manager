@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Serialization;
 
-namespace Naderite.UI_Window_Manager
+namespace Naderite.UIWindowManager
 {
     [RequireComponent(typeof(CanvasGroup))]
     [RequireComponent(typeof(RectTransform))]
