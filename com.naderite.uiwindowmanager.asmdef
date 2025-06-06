@@ -1,0 +1,28 @@
+{
+    "name": "com.naderite.uiwindowmanager",
+    "rootNamespace": "Naderite.UIWindowManager",
+    "references": [
+        "GUID:a0cebc5e04c218546b73bc03a4f0f820"
+    ],
+    "includePlatforms": [
+        "Android",
+        "Editor",
+        "iOS",
+        "Kepler",
+        "tvOS",
+        "WSA",
+        "WebGL",
+        "WindowsStandalone32",
+        "WindowsStandalone64",
+        "WindowsStandalone32Server",
+        "WindowsStandalone64Server"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
