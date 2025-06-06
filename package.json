@@ -6,11 +6,10 @@
   "unity": "2019.1",
   "unityRelease": "0b5",
   "documentationUrl": "https://example.com/",
-
   "keywords": ["UI", "Window", "Manager", "Navigation"],
   "author": {
     "name": "Naderite",
     "email": "naderitegames@gmail.com",
-    "url": "https://github.com/naderitegames/ui-window-manager"
+    "url": "https://github.com/naderitegames"
   }
 }

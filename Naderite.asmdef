@@ -2,7 +2,7 @@
     "name": "Naderite",
     "rootNamespace": "",
     "references": [
-        "GUID:a0cebc5e04c218546b73bc03a4f0f820"
+        "DOTween.Modules"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
