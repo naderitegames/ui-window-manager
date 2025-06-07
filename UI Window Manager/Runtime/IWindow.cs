@@ -27,6 +27,10 @@ namespace Naderite.UIWindowManager
         Vector3 StayRotation { get; }
         Vector3 ToRotation { get; }
 
+        float FromAlpha { get; }
+        float StayAlpha { get; }
+        float ToAlpha { get; }
+
         Ease OpeningEase { get; }
         Ease ClosingEase { get; }
         bool IsOpen { get; }

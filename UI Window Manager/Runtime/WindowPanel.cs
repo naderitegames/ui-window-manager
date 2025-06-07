@@ -32,6 +32,11 @@ namespace Naderite.UIWindowManager
         [SerializeField] private Vector3 stayRotation = Vector3.zero;
         [SerializeField] private Vector3 toRotation = Vector3.zero;
 
+        [Header("Alpha Settings")]
+        [SerializeField, Range(0f, 1f)] private float fromAlpha = 0f;
+        [SerializeField, Range(0f, 1f)] private float stayAlpha = 1f;
+        [SerializeField, Range(0f, 1f)] private float toAlpha = 0f;
+
         [Header("Duration Settings")]
         [SerializeField] private float openingDuration = 0.5f;
         [SerializeField] private float closingDuration = 0.5f;
@@ -58,6 +63,9 @@ namespace Naderite.UIWindowManager
         public Vector3 FromRotation => fromRotation;
         public Vector3 StayRotation => stayRotation;
         public Vector3 ToRotation => toRotation;
+        public float FromAlpha => fromAlpha;
+        public float StayAlpha => stayAlpha;
+        public float ToAlpha => toAlpha;
         public WindowPosition FromPosition => fromPosition;
         public WindowPosition StayPosition => stayPosition;
         public WindowPosition ToPosition => toPosition;
@@ -93,10 +101,14 @@ namespace Naderite.UIWindowManager
             var endScale = stayScale;
             var startRotation = isReversedAnimation ? toRotation : fromRotation;
             var endRotation = stayRotation;
+            var startAlpha = isReversedAnimation ? toAlpha : fromAlpha;
+            var endAlpha = stayAlpha;
+
+            RectTransform.SetAsLastSibling(); // Move to top layer (last child)
 
             if (animated)
             {
-                await Animate(startPos, endPos, startScale, endScale, startRotation, endRotation, true, openingDuration, true, waitForEnd);
+                await Animate(startPos, endPos, startScale, endScale, startRotation, endRotation, startAlpha, endAlpha, true, openingDuration, true, waitForEnd);
             }
             else
             {
@@ -113,10 +125,14 @@ namespace Naderite.UIWindowManager
             var endScale = isReversedAnimation ? fromScale : toScale;
             var startRotation = stayRotation;
             var endRotation = isReversedAnimation ? fromRotation : toRotation;
+            var startAlpha = stayAlpha;
+            var endAlpha = isReversedAnimation ? fromAlpha : toAlpha;
+
+            RectTransform.SetAsFirstSibling(); // Move to bottom layer (first child)
 
             if (animated)
             {
-                await Animate(startPos, endPos, startScale, endScale, startRotation, endRotation, false, closingDuration, false, waitUntilClosingEnds);
+                await Animate(startPos, endPos, startScale, endScale, startRotation, endRotation, startAlpha, endAlpha, false, closingDuration, false, waitUntilClosingEnds);
             }
             else
             {
@@ -129,23 +145,27 @@ namespace Naderite.UIWindowManager
             ChangeStatusTo(false);
         }
 
-        private async Task Animate(WindowPosition startPos, WindowPosition endPos, Vector2 startScale, Vector2 endScale, Vector3 startRotation, Vector3 endRotation, bool status, float duration, bool targetInteractable, bool waitForEnd)
+        private async Task Animate(WindowPosition startPos, WindowPosition endPos, Vector2 startScale, Vector2 endScale, Vector3 startRotation, Vector3 endRotation, float startAlpha, float endAlpha, bool status, float duration, bool targetInteractable, bool waitForEnd)
         {
             AnimateSequence?.Kill(true);
             AnimateSequence = DOTween.Sequence().SetUpdate(true)
                 .OnStart(() =>
                 {
                     IsOpen = status;
-                    if (status) OnStart?.Invoke();
+                    if (status)
+                    {
+                        OnStart?.Invoke();
+                        RectTransform.SetAsLastSibling(); // Move to top layer when open
+                    }
                     RectTransform.anchoredPosition = GetWindowPosition(startPos, status ? fromPositionLerpFactor : toPositionLerpFactor);
                     RectTransform.localScale = startScale;
                     RectTransform.localEulerAngles = startRotation;
-                    CanvasGroup.alpha = status ? 0f : 1f;
+                    CanvasGroup.alpha = startAlpha;
                     CanvasGroup.interactable = false;
                     CanvasGroup.blocksRaycasts = false;
                 })
                 .Append(RectTransform.DOAnchorPos(GetWindowPosition(endPos, status ? fromPositionLerpFactor : toPositionLerpFactor), duration))
-                .Join(CanvasGroup.DOFade(status ? 1 : 0, duration))
+                .Join(CanvasGroup.DOFade(endAlpha, duration))
                 .Join(RectTransform.DOScale(endScale, duration))
                 .Join(RectTransform.DORotate(endRotation, duration))
                 .SetEase(status ? openingEase : closingEase)
@@ -153,8 +173,15 @@ namespace Naderite.UIWindowManager
                 {
                     CanvasGroup.interactable = targetInteractable;
                     CanvasGroup.blocksRaycasts = targetInteractable;
-                    if (status) OnOpened?.Invoke();
-                    else OnClosed?.Invoke();
+                    if (status)
+                    {
+                        OnOpened?.Invoke();
+                    }
+                    else
+                    {
+                        OnClosed?.Invoke();
+                        RectTransform.SetAsFirstSibling(); // Move to bottom layer when closed
+                    }
                 });
 
             if (waitForEnd && AnimateSequence.IsActive())
@@ -165,11 +192,11 @@ namespace Naderite.UIWindowManager
 
         private void ChangeStatusTo(bool status)
         {
-            CanvasGroup.alpha = status ? 1 : 0;
+            CanvasGroup.alpha = status ? stayAlpha : toAlpha;
             CanvasGroup.interactable = status;
             CanvasGroup.blocksRaycasts = status;
             RectTransform.anchoredPosition = GetWindowPosition(status ? stayPosition : toPosition);
-            RectTransform.localScale = (status ? stayScale : toScale);
+            RectTransform.localScale = status ? stayScale : toScale;
             RectTransform.localEulerAngles = status ? stayRotation : toRotation;
             IsOpen = status;
         }
@@ -205,12 +232,12 @@ namespace Naderite.UIWindowManager
 
         public async Task AsyncAnimate(WindowPosition startPos, WindowPosition endPos, bool alpha, float duration, bool interactable)
         {
-            await Animate(startPos, endPos, alpha ? fromScale : stayScale, alpha ? stayScale : toScale, alpha ? fromRotation : stayRotation, alpha ? stayRotation : toRotation, alpha, duration, interactable, true);
+            await Animate(startPos, endPos, alpha ? fromScale : stayScale, alpha ? stayScale : toScale, alpha ? fromRotation : stayRotation, alpha ? stayRotation : toRotation, alpha ? fromAlpha : stayAlpha, alpha ? stayAlpha : toAlpha, alpha, duration, interactable, true);
         }
 
         public void Animate(WindowPosition startPos, WindowPosition endPos, bool alpha, float duration, bool interactable)
         {
-            Animate(startPos, endPos, alpha ? fromScale : stayScale, alpha ? stayScale : toScale, alpha ? fromRotation : stayRotation, alpha ? stayRotation : toRotation, alpha, duration, interactable, false).GetAwaiter().GetResult();
+            Animate(startPos, endPos, alpha ? fromScale : stayScale, alpha ? stayScale : toScale, alpha ? fromRotation : stayRotation, alpha ? stayRotation : toRotation, alpha ? fromAlpha : stayAlpha, alpha ? stayAlpha : toAlpha, alpha, duration, interactable, false).GetAwaiter().GetResult();
         }
     }
 }
