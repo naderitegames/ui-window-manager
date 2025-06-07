@@ -9,11 +9,17 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
     {
         private readonly ActiveWindowStack _activeStack = new ActiveWindowStack();
         private bool _isAnimationInProgress = false;
-        private int _currentIndex = -1; // برای ردیابی ایندکس فعلی در AllWindows
+        private int _currentIndex = -1;
+        public bool AllowRepeatWindows { get; set; } // پراپرتی جدید
 
         public IWindow CurrentWindow => _activeStack.CurrentWindow;
         public int ActiveWindowsCount => _activeStack.Count;
         public List<IWindow> AllWindows { get; } = new List<IWindow>();
+
+        public StackFlowStrategy()
+        {
+            AllowRepeatWindows = true; // مقدار پیش‌فرض
+        }
 
         public async Task OpenWindow(IWindow windowToOpen, bool animated = true, bool isReversedAnimation = false)
         {
@@ -30,7 +36,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 _isAnimationInProgress = true;
                 try
                 {
-                    await _activeStack.CurrentWindow.Close(animated,isReversedAnimation);
+                    await _activeStack.CurrentWindow.Close(animated, isReversedAnimation);
                 }
                 finally
                 {
@@ -41,9 +47,9 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
             _isAnimationInProgress = true;
             try
             {
-                await windowToOpen.Open(windowToOpen.WaitUntilOpeningEnds, animated,isReversedAnimation);
+                await windowToOpen.Open(windowToOpen.WaitUntilOpeningEnds, animated, isReversedAnimation);
                 _activeStack.Push(windowToOpen);
-                _currentIndex = AllWindows.IndexOf(windowToOpen); // به‌روزرسانی ایندکس
+                _currentIndex = AllWindows.IndexOf(windowToOpen);
             }
             finally
             {
@@ -101,6 +107,19 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 return;
             }
 
+            if (_currentIndex + 1 >= AllWindows.Count)
+            {
+                if (!AllowRepeatWindows)
+                {
+                    Debug.Log("Reached the last window. Repeating is disabled.");
+                    return;
+                }
+                else
+                {
+                    _currentIndex = -1;
+                }
+            }
+
             int nextIndex = (_currentIndex + 1) % AllWindows.Count;
             await OpenWindow(AllWindows[nextIndex], animated);
         }
@@ -113,6 +132,19 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
             {
                 Debug.LogWarning("Cannot move to previous window while another animation is in progress.");
                 return;
+            }
+
+            if (_currentIndex - 1 < 0)
+            {
+                if (!AllowRepeatWindows)
+                {
+                    Debug.Log("Reached the first window. Repeating is disabled.");
+                    return;
+                }
+                else
+                {
+                    _currentIndex = AllWindows.Count;
+                }
             }
 
             int prevIndex = (_currentIndex - 1 + AllWindows.Count) % AllWindows.Count;

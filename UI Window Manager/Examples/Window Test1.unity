@@ -799,6 +799,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -3216,6 +3217,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -4474,6 +4476,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -7502,6 +7505,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -7953,6 +7957,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -10069,6 +10074,7 @@ MonoBehaviour:
   defaultWindowName: Option 1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 0
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -10250,6 +10256,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -10831,6 +10838,7 @@ MonoBehaviour:
   defaultWindowName: option2
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -12535,6 +12543,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -16102,6 +16111,7 @@ MonoBehaviour:
   defaultWindowName: Main Menu
   _flowType: 1
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []
@@ -16546,6 +16556,7 @@ MonoBehaviour:
   defaultWindowName: option1
   _flowType: 0
   disableAllByDefault: 1
+  allowRepeatWindows: 1
   onStart:
     m_PersistentCalls:
       m_Calls: []

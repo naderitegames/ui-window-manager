@@ -28,6 +28,7 @@ namespace Naderite.UIWindowManager
         private WindowStrategyFlowType _flowType = WindowStrategyFlowType.Carousel;
 
         [SerializeField] private bool disableAllByDefault = true;
+        [SerializeField] private bool allowRepeatWindows = true; // متغیر برای اینسپکتور
         [SerializeField] private UnityEvent onStart;
         private WindowsContainer _windowsContainer;
         IWindowFlowStrategy flowStrategy;
@@ -39,15 +40,15 @@ namespace Naderite.UIWindowManager
             switch (_flowType)
             {
                 case WindowStrategyFlowType.Stack:
-                    flowStrategy = new StackFlowStrategy();
+                    flowStrategy = new StackFlowStrategy { AllowRepeatWindows = allowRepeatWindows };
                     break;
                 default:
                 case WindowStrategyFlowType.Carousel:
-                    flowStrategy = new CarouselFlowStrategy();
+                    flowStrategy = new CarouselFlowStrategy { AllowRepeatWindows = allowRepeatWindows };
                     break;
             }
 
-            _windowsContainer = new WindowsContainer(flowStrategy ?? new CarouselFlowStrategy());
+            _windowsContainer = new WindowsContainer(flowStrategy ?? new CarouselFlowStrategy { AllowRepeatWindows = allowRepeatWindows });
         }
 
         private void Start()

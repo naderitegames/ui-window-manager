@@ -6,15 +6,21 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
 {
     public class CarouselFlowStrategy : IWindowFlowStrategy
     {
-        public List<IWindow> AllWindows { private set; get; } = new ();
+        public List<IWindow> AllWindows { private set; get; } = new();
         public int ActiveWindowsCount => AllWindows.Count;
         private int _currentIndex = -1;
         private bool _isAnimationInProgress = false;
+        public bool AllowRepeatWindows { get; set; }
 
         public IWindow CurrentWindow =>
             _currentIndex >= 0 && _currentIndex < AllWindows.Count ? AllWindows[_currentIndex] : null;
 
-        public async Task OpenWindow(IWindow window, bool animated = true,bool isReversedAnimation = false)
+        public CarouselFlowStrategy()
+        {
+            AllowRepeatWindows = true;
+        }
+
+        public async Task OpenWindow(IWindow window, bool animated = true, bool isReversedAnimation = false)
         {
             if (window == null || !AllWindows.Contains(window) || window.IsOpen) return;
 
@@ -29,11 +35,11 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
             {
                 if (CurrentWindow != null && CurrentWindow != window)
                 {
-                    await CurrentWindow.Close(animated,isReversedAnimation);
+                    await CurrentWindow.Close(animated, isReversedAnimation);
                 }
 
                 _currentIndex = AllWindows.IndexOf(window);
-                await window.Open(window.WaitUntilOpeningEnds, animated,isReversedAnimation);
+                await window.Open(window.WaitUntilOpeningEnds, animated, isReversedAnimation);
             }
             finally
             {
@@ -68,6 +74,23 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
         {
             if (AllWindows.Count == 0) return;
 
+            if (_isAnimationInProgress)
+            {
+                Debug.LogWarning("Cannot move to next window while another animation is in progress.");
+                return;
+            }
+
+            if (_currentIndex + 1 >= AllWindows.Count)
+            {
+                if (!AllowRepeatWindows)
+                {
+                    Debug.Log("Reached the last window. Repeating is disabled.");
+                    return;
+                }
+
+                _currentIndex = -1;
+            }
+
             int nextIndex = (_currentIndex + 1) % AllWindows.Count;
             await OpenWindow(AllWindows[nextIndex], animated);
         }
@@ -76,8 +99,25 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
         {
             if (AllWindows.Count == 0) return;
 
+            if (_isAnimationInProgress)
+            {
+                Debug.LogWarning("Cannot move to previous window while another animation is in progress.");
+                return;
+            }
+
+            if (_currentIndex - 1 < 0)
+            {
+                if (!AllowRepeatWindows)
+                {
+                    Debug.Log("Reached the first window. Repeating is disabled.");
+                    return;
+                }
+
+                _currentIndex = AllWindows.Count;
+            }
+
             int prevIndex = (_currentIndex - 1 + AllWindows.Count) % AllWindows.Count;
-            await OpenWindow(AllWindows[prevIndex], animated,true);
+            await OpenWindow(AllWindows[prevIndex], animated, true);
         }
 
         public void CloseAllInstantly()
