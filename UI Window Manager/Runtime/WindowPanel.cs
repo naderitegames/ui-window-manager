@@ -23,9 +23,9 @@ namespace Naderite.UIWindowManager
         [SerializeField, Range(0f, 1f)] private float toPositionLerpFactor = 1f;
 
         [Header("Scale Settings")]
-        [SerializeField, Range(0f, 2f)] private float fromScale = 1f;
-        [SerializeField, Range(0f, 2f)] private float stayScale = 1f;
-        [SerializeField, Range(0f, 2f)] private float toScale = 1f;
+        [SerializeField] private Vector2 fromScale = Vector2.one;
+        [SerializeField] private Vector2 stayScale = Vector2.one;
+        [SerializeField] private Vector2 toScale = Vector2.one;
 
         [Header("Rotation Settings")]
         [SerializeField] private Vector3 fromRotation = Vector3.zero;
@@ -52,9 +52,9 @@ namespace Naderite.UIWindowManager
         public Ease ClosingEase => closingEase;
         public float FromPositionLerpFactor => fromPositionLerpFactor;
         public float ToPositionLerpFactor => toPositionLerpFactor;
-        public float FromScale => fromScale;
-        public float StayScale => stayScale;
-        public float ToScale => toScale;
+        public Vector2 FromScale => fromScale;
+        public Vector2 StayScale => stayScale;
+        public Vector2 ToScale => toScale;
         public Vector3 FromRotation => fromRotation;
         public Vector3 StayRotation => stayRotation;
         public Vector3 ToRotation => toRotation;
@@ -129,7 +129,7 @@ namespace Naderite.UIWindowManager
             ChangeStatusTo(false);
         }
 
-        private async Task Animate(WindowPosition startPos, WindowPosition endPos, float startScale, float endScale, Vector3 startRotation, Vector3 endRotation, bool status, float duration, bool targetInteractable, bool waitForEnd)
+        private async Task Animate(WindowPosition startPos, WindowPosition endPos, Vector2 startScale, Vector2 endScale, Vector3 startRotation, Vector3 endRotation, bool status, float duration, bool targetInteractable, bool waitForEnd)
         {
             AnimateSequence?.Kill(true);
             AnimateSequence = DOTween.Sequence().SetUpdate(true)
@@ -138,7 +138,7 @@ namespace Naderite.UIWindowManager
                     IsOpen = status;
                     if (status) OnStart?.Invoke();
                     RectTransform.anchoredPosition = GetWindowPosition(startPos, status ? fromPositionLerpFactor : toPositionLerpFactor);
-                    RectTransform.localScale = Vector3.one * startScale;
+                    RectTransform.localScale = startScale;
                     RectTransform.localEulerAngles = startRotation;
                     CanvasGroup.alpha = status ? 0f : 1f;
                     CanvasGroup.interactable = false;
@@ -169,7 +169,7 @@ namespace Naderite.UIWindowManager
             CanvasGroup.interactable = status;
             CanvasGroup.blocksRaycasts = status;
             RectTransform.anchoredPosition = GetWindowPosition(status ? stayPosition : toPosition);
-            RectTransform.localScale = Vector3.one * (status ? stayScale : toScale);
+            RectTransform.localScale = (status ? stayScale : toScale);
             RectTransform.localEulerAngles = status ? stayRotation : toRotation;
             IsOpen = status;
         }

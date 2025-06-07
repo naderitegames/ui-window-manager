@@ -19,9 +19,9 @@ namespace Naderite.UIWindowManager
         float FromPositionLerpFactor { get; }
         float ToPositionLerpFactor { get; }
 
-        float FromScale { get; }
-        float StayScale { get; }
-        float ToScale { get; }
+        Vector2 FromScale { get; }
+        Vector2 StayScale { get; }
+        Vector2 ToScale { get; }
 
         Vector3 FromRotation { get; }
         Vector3 StayRotation { get; }
