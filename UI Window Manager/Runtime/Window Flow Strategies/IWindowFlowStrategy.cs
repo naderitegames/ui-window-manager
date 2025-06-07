@@ -5,7 +5,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
     public interface IWindowFlowStrategy
     {
         List<IWindow> AllWindows { get; }
-        bool AllowRepeatWindows { get; set; }
+        bool AllowRepeatWindows { get; set; } // پراپرتی جدید
         Task OpenWindow(IWindow window, bool animated = true, bool isReversedAnimation = false);
         Task CloseCurrentWindow(bool animated = true);
         void CloseAllInstantly();

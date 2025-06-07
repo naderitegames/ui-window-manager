@@ -10,15 +10,15 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
         private readonly ActiveWindowStack _activeStack = new ActiveWindowStack();
         private bool _isAnimationInProgress = false;
         private int _currentIndex = -1;
-        public bool AllowRepeatWindows { get; set; } // پراپرتی جدید
+        public bool AllowRepeatWindows { get; set; }
 
         public IWindow CurrentWindow => _activeStack.CurrentWindow;
         public int ActiveWindowsCount => _activeStack.Count;
         public List<IWindow> AllWindows { get; } = new List<IWindow>();
 
-        public StackFlowStrategy()
+        public StackFlowStrategy(bool allowRepeatWindows)
         {
-            AllowRepeatWindows = true; // مقدار پیش‌فرض
+            AllowRepeatWindows = allowRepeatWindows;
         }
 
         public async Task OpenWindow(IWindow windowToOpen, bool animated = true, bool isReversedAnimation = false)
@@ -107,6 +107,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 return;
             }
 
+            int nextIndex;
             if (_currentIndex + 1 >= AllWindows.Count)
             {
                 if (!AllowRepeatWindows)
@@ -114,13 +115,13 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                     Debug.Log("Reached the last window. Repeating is disabled.");
                     return;
                 }
-                else
-                {
-                    _currentIndex = -1;
-                }
+                nextIndex = 0; // Loop back to the first window
+            }
+            else
+            {
+                nextIndex = _currentIndex + 1;
             }
 
-            int nextIndex = (_currentIndex + 1) % AllWindows.Count;
             await OpenWindow(AllWindows[nextIndex], animated);
         }
 
@@ -134,6 +135,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 return;
             }
 
+            int prevIndex;
             if (_currentIndex - 1 < 0)
             {
                 if (!AllowRepeatWindows)
@@ -141,14 +143,14 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                     Debug.Log("Reached the first window. Repeating is disabled.");
                     return;
                 }
-                else
-                {
-                    _currentIndex = AllWindows.Count;
-                }
+                prevIndex = AllWindows.Count - 1; // Loop to the last window
+            }
+            else
+            {
+                prevIndex = _currentIndex - 1;
             }
 
-            int prevIndex = (_currentIndex - 1 + AllWindows.Count) % AllWindows.Count;
-            await OpenWindow(AllWindows[prevIndex], animated);
+            await OpenWindow(AllWindows[prevIndex], animated, true);
         }
 
         public void CloseAllInstantly()

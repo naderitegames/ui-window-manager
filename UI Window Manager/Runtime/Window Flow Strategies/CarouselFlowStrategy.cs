@@ -6,7 +6,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
 {
     public class CarouselFlowStrategy : IWindowFlowStrategy
     {
-        public List<IWindow> AllWindows { private set; get; } = new();
+        public List<IWindow> AllWindows { get; } = new();
         public int ActiveWindowsCount => AllWindows.Count;
         private int _currentIndex = -1;
         private bool _isAnimationInProgress = false;
@@ -15,14 +15,30 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
         public IWindow CurrentWindow =>
             _currentIndex >= 0 && _currentIndex < AllWindows.Count ? AllWindows[_currentIndex] : null;
 
-        public CarouselFlowStrategy()
+        public CarouselFlowStrategy(bool allowRepeatWindows)
         {
-            AllowRepeatWindows = true;
+            AllowRepeatWindows = allowRepeatWindows;
         }
 
         public async Task OpenWindow(IWindow window, bool animated = true, bool isReversedAnimation = false)
         {
-            if (window == null || !AllWindows.Contains(window) || window.IsOpen) return;
+            if (window == null)
+            {
+                Debug.LogError("Window reference is null! Cannot proceed.");
+                return;
+            }
+
+            if (!AllWindows.Contains(window))
+            {
+                Debug.LogError($"Window '{window.WindowName}' not found in AllWindows collection!");
+                return;
+            }
+
+            if (window.IsOpen)
+            {
+                Debug.LogWarning($"Window '{window.WindowName}' is already open!");
+                return;
+            }
 
             if (_isAnimationInProgress)
             {
@@ -53,8 +69,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
 
             if (_isAnimationInProgress)
             {
-                Debug.LogWarning(
-                    $"Cannot close window '{CurrentWindow.WindowName}' while another animation is in progress.");
+                Debug.LogWarning($"Cannot close window '{CurrentWindow.WindowName}' while another animation is in progress.");
                 return;
             }
 
@@ -80,6 +95,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 return;
             }
 
+            int nextIndex;
             if (_currentIndex + 1 >= AllWindows.Count)
             {
                 if (!AllowRepeatWindows)
@@ -87,11 +103,13 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                     Debug.Log("Reached the last window. Repeating is disabled.");
                     return;
                 }
-
-                _currentIndex = -1;
+                nextIndex = 0; // Loop back to the first window
+            }
+            else
+            {
+                nextIndex = _currentIndex + 1;
             }
 
-            int nextIndex = (_currentIndex + 1) % AllWindows.Count;
             await OpenWindow(AllWindows[nextIndex], animated);
         }
 
@@ -105,6 +123,7 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                 return;
             }
 
+            int prevIndex;
             if (_currentIndex - 1 < 0)
             {
                 if (!AllowRepeatWindows)
@@ -112,11 +131,13 @@ namespace Naderite.UIWindowManager.Window_Flow_Strategies
                     Debug.Log("Reached the first window. Repeating is disabled.");
                     return;
                 }
-
-                _currentIndex = AllWindows.Count;
+                prevIndex = AllWindows.Count - 1; // Loop to the last window
+            }
+            else
+            {
+                prevIndex = _currentIndex - 1;
             }
 
-            int prevIndex = (_currentIndex - 1 + AllWindows.Count) % AllWindows.Count;
             await OpenWindow(AllWindows[prevIndex], animated, true);
         }
 
