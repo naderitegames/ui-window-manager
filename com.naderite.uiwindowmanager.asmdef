@@ -8,14 +8,10 @@
         "Android",
         "Editor",
         "iOS",
-        "Kepler",
-        "tvOS",
         "WSA",
         "WebGL",
         "WindowsStandalone32",
-        "WindowsStandalone64",
-        "WindowsStandalone32Server",
-        "WindowsStandalone64Server"
+        "WindowsStandalone64"
     ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
