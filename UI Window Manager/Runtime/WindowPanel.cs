@@ -78,14 +78,14 @@ namespace Naderite.UIWindowManager
         public WindowPosition FromPosition => fromPosition;
         public WindowPosition StayPosition => stayPosition;
         public WindowPosition ToPosition => toPosition;
-        public bool isOpen = false;
+        bool isOpen = false;
 
         public bool IsOpen
         {
             get => isOpen;
             private set
             {
-                Debug.Log($"IsOpen of {windowName} is : {value}");
+                //Debug.Log($"{windowName} open state is : {value}");
                 isOpen = value;
             }
         }
